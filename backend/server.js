@@ -1,6 +1,7 @@
 import express from "express";
+import cors from "cors";
 import dotenv from "dotenv";
-import { fileURLToPath } from 'url';
+import { fileURLToPath } from "url";
 import { dirname } from "path";
 
 // direct dotenv to the .env file
@@ -11,6 +12,7 @@ dotenv.config({ path: `${__dirname}/.env`})
 const app = express();
 const port = 8080;
 app.use(express.json());
+app.use(cors()) // allow CORS so that the frontend app can make requests while running on a different port
 
 
 // proxy endpoint for https://api.nytimes.com/svc/books/v3/lists/overview.json

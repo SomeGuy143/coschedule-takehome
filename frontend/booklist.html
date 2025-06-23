@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="site.css">
+    </head>
+    <body>
+        <div class="pageHeader">
+            <h1 class="headerText">NYT Best Sellers</h1>
+            <input type="date" id="date"/>
+            <select id="list">
+                <option value="combined-print-and-e-book-fiction">Print and E-Book Fiction</option>
+                <option value="combined-print-and-e-book-nonfiction">Print and E-Book Non-Fiction</option>
+                <option value="hardcover-fiction">Hardcover Fiction</option>
+                <option value="hardcover-nonfiction">Hardcover Non-Fiction</option>
+                <option value="trade-fiction-paperback">Paperback Trade Fiction</option>
+                <option value="paperback-nonfiction">Paperback Non-Fiction</option>
+                <option value="advice-how-to-and-miscellaneous">Advice / How-To / Miscelaneous</option>
+                <option value="childrens-middle-grade-hardcover">Children's Middle Grade Hardcover</option>
+                <option value="picture-books">Picture Books</option>
+                <option value="series-books">Series Books</option>
+                <option value="young-adult-hardcover">Yound Adult Hardcover</option>
+                <option value="audio-fiction">Audio Fiction</option>
+                <option value="audio-nonfiction">Audio Non-Fiction</option>
+                <option value="business-books">Business Books</option>
+                <option value="graphic-books-and-manga">Graphic Books and Manga</option>
+                <option value="mass-market-monthly">Mass Market (Monthly)</option>
+                <option value="young-adult-paperback-monthly">YA Paperback (Monthly)</option>
+                <option value="childrens-middle-grade-paperback-monthly">Children's Middle Grade Paperback (Monthly)</option>
+            </select>
+        </div>
+        <!-- <div id="listBody">
+        </div> -->
+        <div id="listBody">
+            <div class="bookRow" data-isbn13="9798874620936">
+                <img class="bookCover" src="https://static01.nyt.com/bestsellers/images/9798874620936.jpg">
+                <div>
+                    <p class="bookTitle">THE PERFECT DIVORCE</p>
+                    <p>Around the time of the disappearance of a woman who had a one-night stand with the attorney Sarah Morgan’s new husband, police reopen the investigation into the murder of her first husband’s mistress.</p>
+                </div>
+            </div>
+            <div class="bookRow" data-isbn13="9781538742082">
+                <img class="bookCover" src="https://static01.nyt.com/bestsellers/images/9781538742082.jpg">
+                <div>
+                    <p class="bookTitle">STRANGERS IN TIME</p>
+                    <p>In London in 1944, two teenagers dealing with the dangers of World War II form an alliance with a bookshop owner.</p>
+                </div>
+            </div>
+        </div>
+        <div id="commentSection" data-isbn13="" hidden>
+            <span>test</span>
+        </div>
+    </body>
+    <script src="booklist.js"/></script>
+</html>

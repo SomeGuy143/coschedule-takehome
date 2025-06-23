@@ -1,0 +1,55 @@
+.pageHeader {
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  background-color: white;
+  height: 70px;
+}
+
+.headerText {
+  text-align: left; 
+  margin: 5px;
+}
+
+.bookCover {
+  alt: "Book cover";
+  width: 100px;
+}
+
+.bookTitle {
+  text-decoration: underline;
+  font-weight: bold;
+}
+
+.bookRow {
+  display: flex;
+  border-bottom: 2px solid gray;
+}
+
+.bookRow:hover {
+  background-color: lightgray;
+}
+
+#commentSection {
+  background-color: lightgray;
+}
+
+.split {
+  height: 100%;
+  width: 50%;
+  position: fixed;
+  z-index: 1;
+  /* top: 0; */
+  overflow-x: hidden;
+  padding-top: 20px;
+}
+
+/* Control the left side */
+.left {
+  left: 0;
+}
+
+/* Control the right side */
+.right {
+  right: 0;
+}
