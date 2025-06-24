@@ -13,7 +13,8 @@
 
 .bookCover {
   alt: "Book cover";
-  width: 100px;
+  width: 115px;
+  object-fit: contain;
 }
 
 .bookTitle {
@@ -24,6 +25,7 @@
 .bookRow {
   display: flex;
   border-bottom: 2px solid gray;
+  padding-right: 10;
 }
 
 .bookRow:hover {
@@ -39,17 +41,45 @@
   width: 50%;
   position: fixed;
   z-index: 1;
-  /* top: 0; */
   overflow-x: hidden;
-  padding-top: 20px;
 }
 
-/* Control the left side */
 .left {
   left: 0;
 }
 
-/* Control the right side */
 .right {
   right: 0;
+}
+
+.verticalScroll {
+  overflow-y: auto; 
+  overflow-x: hidden;
+}
+
+.verticalScrollMargin {
+  margin-bottom: 100px;
+}
+
+#addCommentButton {
+  text-align: center; 
+  width: 100%;
+}
+
+#addCommentTextArea {
+  width: 100%; 
+  min-height: 50px;
+}
+
+#commentSection {
+  padding: 10px;
+}
+
+.commentRow {
+  border-bottom: 2px solid white;
+}
+
+.userName {
+  font-weight: bold; 
+  margin-bottom: 0;
 }
