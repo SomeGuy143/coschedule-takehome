@@ -11,26 +11,20 @@ export default class InMemoryDB {
                 isbn13 TEXT NOT NULL,
                 userid INT NOT NULL,
                 text TEXT,
-                deleted INT NOT NULL)`, (stmt, error) => {
-
-                });
+                deleted INT NOT NULL)`);
 
             db.exec(`CREATE TABLE Rating (
                 id INTEGER PRIMARY KEY,
                 isbn13 TEXT NOT NULL,
                 userid INT NOT NULL,
                 score INT NOT NULL,
-                deleted INT NOT NULL)`, (stmt, error) => {
-                    
-                });
+                deleted INT NOT NULL)`);
 
             db.exec(`CREATE TABLE User (
                 id INTEGER PRIMARY KEY,
                 username TEXT NOT NULL,
                 password TEXT NOT NULL,
-                deleted INT NOT NULL)`, (stmt, error) => {
-                    
-                });
+                deleted INT NOT NULL)`);
         });
 
         return db;
