@@ -39,7 +39,7 @@
         <div id="listBody">
             <div class="verticalScroll">
                 <div id="listInnerScrollContainer">
-                    <div class="bookRow" data-isbn13="9798874620936">
+                    <!-- <div class="bookRow" data-isbn13="9798874620936">
                         <img class="bookCover" src="https://static01.nyt.com/bestsellers/images/9798874620936.jpg">
                         <div>
                             <p class="bookTitle">THE PERFECT DIVORCE</p>
@@ -80,24 +80,26 @@
                             <p class="bookTitle">STRANGERS IN TIME</p>
                             <p>In London in 1944, two teenagers dealing with the dangers of World War II form an alliance with a bookshop owner.</p>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>
         <!-- WIP END -->
         <div id="commentSection" data-isbn13="" hidden>
             <div class="verticalScroll">
+                <div id="ratingContainer">
+                    <p id="avgRatingText">Avg Rating: <span id="avgRating"></span></p>
+                    <span>Your Rating: 
+                        <input id="userRating" data-id="" type="text" pattern="[0-5]{1}" maxlength="1"> 
+                        <button id="submitRating">Submit</button>
+                        <button id="clearRating">Clear</button>
+                    </span>
+                </div>
                 <div id="addCommentContainer">
                     <textarea id="addCommentTextArea" type="text" placeholder="Leave a comment..."></textarea>
                     <button id="addCommentButton">Post</button>
                 </div>
                 <div id="postedCommentsContainer" class="verticalScrollMargin">
-                    <!-- THIS IS WORK IN PROGRESS TO GET A TEMPLATE -->
-                    <div class="commentRow">
-                        <p class="userName">User Name</p>
-                        <p>Comment...</p>
-                    </div>
-                    <!-- WIP END -->
                 </div>
             </div>
         </div>

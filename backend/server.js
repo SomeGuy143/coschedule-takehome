@@ -3,7 +3,11 @@ import cors from "cors";
 import dotenv from "dotenv";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
-import InMemoryDB from "./db.js";
+import inMemoryDB from "./db.js";
+import nytBooksHandlers from "./handlers/nytBooksHandlers.js";
+import commentHandlers from "./handlers/commentHandlers.js";
+import ratingHandlers from "./handlers/ratingHandlers.js";
+import userHandlers from "./handlers/userHandlers.js";
 
 // direct dotenv to the .env file
 const __filename = fileURLToPath(import.meta.url);
@@ -17,115 +21,54 @@ app.use(express.json());
 app.use(cors()) // allow CORS so that the frontend app can make requests while running on a different port
 
 // instantiate database
-const db = await InMemoryDB.init();
-var result = db.run(`INSERT INTO Comment(isbn13, userid, deleted) VALUES(?, ?, ?)`, ["123", 12, 0], (error) => {
-  var res = result;
-});
-var restult2 = db.get(`SELECT * FROM Comment`, (error, row) => {
-  var res = result;
-});
+const db = await inMemoryDB.init();
 
-
-// get by id
-app.get("/comments/:id", (req, res) => {
-  db.get(`SELECT * FROM Comment WHERE id = ?`, [req.params.id], (error, row) => {
-    if (error === null) {
-      res.send(row);
-    } else {
-      res.status(500).send(error);
-    }
-  });
+// ****************** CLEAN THIS OUT LATER ******************
+// test data
+let result = inMemoryDB.db.run(`INSERT INTO Comment(isbn13, userid, text, deleted) VALUES(?, ?, ?, ?)`, ["9798874620936", 1, "THIS IS A TEST COMMENT!", 0], (error) => {
+  let res = result;
 });
-
-// get by isbn13 (returns a list)
-// expects query parameter "isbn13" which is the isbn of the book that the comments relate to
-// returns a list of comments
-app.get("/comments", (req, res) => {
-  db.all(`SELECT * FROM Comment WHERE isbn13 = ?`, [req.query.isbn13], (error, rows) => {
-    if (error === null) {
-      res.send(rows);
-    } else {
-      res.status(500).send(error);
-    }
-  });
+result = inMemoryDB.db.run(`INSERT INTO Comment(isbn13, userid, text, deleted) VALUES(?, ?, ?, ?)`, ["9798874620936", 2, "THIS IS ANOTHER TEST COMMENT!", 0], (error) => {
+  let res = result;
+});
+result = inMemoryDB.db.run(`INSERT INTO Rating(isbn13, userid, score, deleted) VALUES(?, ?, ?, ?)`, ["9798874620936", 1, 3, 0], (error) => {
+  let res = result;
+});
+result = inMemoryDB.db.run(`INSERT INTO Rating(isbn13, userid, score, deleted) VALUES(?, ?, ?, ?)`, ["9798874620936", 2, 4, 0], (error) => {
+  let res = result;
+});
+result = inMemoryDB.db.run(`INSERT INTO User(username, password, deleted) VALUES(?, ?, ?)`, ["user1", "password111", 0], (error) => {
+  let res = result;
+});
+result = inMemoryDB.db.run(`INSERT INTO User(username, password, deleted) VALUES(?, ?, ?)`, ["user2", "password222", 0], (error) => {
+  let res = result;
+});
+result = inMemoryDB.db.all(`SELECT Comment.text, User.username FROM Comment INNER JOIN User ON Comment.userid = User.id`, (error, rows) => {
+  let res = rows;
 });
 
-// create a comment
-app.post("/comments", (req, res) => {
-  db.run(`INSERT INTO Comment(isbn13, userid, text, deleted) VALUES(?, ?, ?, 0)`, [req.body.isbn13, req.body.userid, req.body.text], function(error) {
-    if (error === null) {
-      res.send({id: this.lastID});  // id of inserted row
-    } else {
-      res.status(500).send(error);
-    }
-  });
-});
+app.get("/comments/:id", commentHandlers.getCommentById);
+app.get("/comments", commentHandlers.getComments);
+app.post("/comments", commentHandlers.createComment);
+app.patch("/comments/:id", commentHandlers.updateComment);   // just expects json body like { "text": "some new comment..."}
+app.delete("/comments/:id", commentHandlers.deleteComment);
 
-// udpate a comment
-// just expects json body like { "text": "some new comment..."}
-app.patch("/comments/:id", (req, res) => {
-  db.run(`UPDATE Comment SET text = ? WHERE id = ${req.params.id}`, [req.body.text], (error) => {
-    if (error === null) {
-      res.send();
-    } else {
-      res.status(500).send(error);
-    }
-  });
-});
+app.get("/ratings/:id", ratingHandlers.getRatingById);
+app.get("/ratings", ratingHandlers.getRatings);
+app.post("/ratings", ratingHandlers.createRating);
+app.patch("/ratings/:id", ratingHandlers.updateRating);
+app.delete("/ratings/:id", ratingHandlers.deleteRating);
+app.get("/ratings/average/:isbn13", ratingHandlers.getAvgRating);
 
-// delete a comment
-// expects query parameter "id"
-app.delete("/comments/:id", (req, res) => {
-  db.run(`UPDATE Comment SET deleted = 1 WHERE id = ?`, [req.params.id], (error) => {
-    if (error === null) {
-      res.send();
-    } else {
-      res.status(500).send(error);
-    }
-  });
-});
-
+app.get("/users/:id", userHandlers.getUserById);
+app.get("/users", userHandlers.getUser);      // expects credentials via basic authentication (header)
+app.post("/users", userHandlers.createUser);  // expects credentials via basic authentication (header)
 
 // proxy endpoint for https://api.nytimes.com/svc/books/v3/lists/overview.json
 // req should contain a query parameter "published_date" with a value in YYYY-MM-DD format
-app.get("/nytbooks/overview", (req, res) => {
-  const url = new URL(`${process.env.NYT_BASE_URL}/overview.json`);
-  const urlParams = new URLSearchParams({ "api-key": process.env.API_KEY, published_date: req.query.published_date });
-  url.search = urlParams.toString();
-
-  fetch(url)
-    .then(nytResponse => {
-      res.statusCode = nytResponse.status;
-      nytResponse.json().then(data => {
-        res.send(data);
-      });
-    })
-    .catch(error => {
-      res.statusCode = 400;
-      res.send({ status: "ERROR", error: "something went wrong"});
-    });
-});
-
-
+app.get("/nytbooks/overview", nytBooksHandlers.overview);
 // proxy endpoint for https://api.nytimes.com/svc/books/v3/lists/:date/:list.json
-app.get("/nytbooks/:date/:list", (req, res) => {
-  const url = new URL(`${process.env.NYT_BASE_URL}/${req.params.date}/${req.params.list}.json`);
-  const urlParams = new URLSearchParams({ "api-key": process.env.API_KEY });
-  url.search = urlParams.toString();
-
-  fetch(url)
-    .then(nytResponse => {
-      res.statusCode = nytResponse.status;
-      nytResponse.json().then(data => {
-        res.send(data);
-      });
-    })
-    .catch(error => {
-      res.statusCode = 400;
-      res.send({ status: "ERROR", error: "something went wrong"});
-    });
-});
-
+app.get("/nytbooks/:date/:list", nytBooksHandlers.list);
 
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
