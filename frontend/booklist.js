@@ -7,6 +7,11 @@ window.onload = async function() {
         const response = await fetch(`http://localhost:8080/nytbooks/${formattedDate}/combined-print-and-e-book-fiction`);
         const data = await response.json();
 
+        if (response.status == 404) {
+            document.getElementById("listInnerScrollContainer").innerHTML = "<p><b>List Not Found. Try a different date or list type.</b></p>";
+            return;
+        } 
+
         for (let i = 0; i < data.results.books.length; i++) {
             let bookRowHtml = `<div class="bookRow" data-isbn13="${data.results.books[i].primary_isbn13}">
                                     <img class="bookCover" src="${data.results.books[i].book_image}" />
@@ -31,6 +36,11 @@ document.getElementById("search").addEventListener("click", async function(event
 
         let response = await fetch(`http://localhost:8080/nytbooks/${selectedDateVal}/${selectedListVal}`);
         let data = await response.json();
+
+        if (response.status == 404) {
+            document.getElementById("listInnerScrollContainer").innerHTML = "<p><b>List Not Found. Try a different date or list type.</b></p>";
+            return;
+        } 
 
         document.getElementById("listInnerScrollContainer").innerHTML = "";
 
