@@ -17,7 +17,8 @@ export default class InMemoryDB {
                 isbn13 TEXT NOT NULL,
                 userid INT NOT NULL,
                 score INT NOT NULL,
-                deleted INT NOT NULL)`);
+                deleted INT NOT NULL,
+                UNIQUE(isbn13, userid) ON CONFLICT ABORT)`);
 
             this.db.exec(`CREATE TABLE User (
                 id INTEGER PRIMARY KEY,

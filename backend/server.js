@@ -18,57 +18,27 @@ dotenv.config({ path: `${__dirname}/.env`})
 const app = express();
 const port = 8080;
 app.use(express.json());
-app.use(cors()) // allow CORS so that the frontend app can make requests while running on a different port
+app.use(cors()); // enable cors for a simple way to allow requests from the local frontend project on a different port. Obviously, we wouldn't do this in a real system.
 
-// instantiate database
-const db = await inMemoryDB.init();
-
-// ****************** CLEAN THIS OUT LATER ******************
-// test data
-let result = inMemoryDB.db.run(`INSERT INTO Comment(isbn13, userid, text, deleted) VALUES(?, ?, ?, ?)`, ["9798874620936", 1, "THIS IS A TEST COMMENT!", 0], (error) => {
-  let res = result;
-});
-result = inMemoryDB.db.run(`INSERT INTO Comment(isbn13, userid, text, deleted) VALUES(?, ?, ?, ?)`, ["9798874620936", 2, "THIS IS ANOTHER TEST COMMENT!", 0], (error) => {
-  let res = result;
-});
-result = inMemoryDB.db.run(`INSERT INTO Rating(isbn13, userid, score, deleted) VALUES(?, ?, ?, ?)`, ["9798874620936", 1, 3, 0], (error) => {
-  let res = result;
-});
-result = inMemoryDB.db.run(`INSERT INTO Rating(isbn13, userid, score, deleted) VALUES(?, ?, ?, ?)`, ["9798874620936", 2, 4, 0], (error) => {
-  let res = result;
-});
-result = inMemoryDB.db.run(`INSERT INTO User(username, password, deleted) VALUES(?, ?, ?)`, ["user1", "password111", 0], (error) => {
-  let res = result;
-});
-result = inMemoryDB.db.run(`INSERT INTO User(username, password, deleted) VALUES(?, ?, ?)`, ["user2", "password222", 0], (error) => {
-  let res = result;
-});
-result = inMemoryDB.db.all(`SELECT Comment.text, User.username FROM Comment INNER JOIN User ON Comment.userid = User.id`, (error, rows) => {
-  let res = rows;
-});
+await inMemoryDB.init();
 
 app.get("/comments/:id", commentHandlers.getCommentById);
 app.get("/comments", commentHandlers.getComments);
 app.post("/comments", commentHandlers.createComment);
-app.patch("/comments/:id", commentHandlers.updateComment);   // just expects json body like { "text": "some new comment..."}
+app.patch("/comments/:id", commentHandlers.updateComment);
 app.delete("/comments/:id", commentHandlers.deleteComment);
 
 app.get("/ratings/:id", ratingHandlers.getRatingById);
 app.get("/ratings", ratingHandlers.getRatings);
-app.post("/ratings", ratingHandlers.createRating);
-app.patch("/ratings/:id", ratingHandlers.updateRating);
+app.post("/ratings", ratingHandlers.upsertRating);
 app.delete("/ratings/:id", ratingHandlers.deleteRating);
 app.get("/ratings/average/:isbn13", ratingHandlers.getAvgRating);
 
-app.get("/users/:id", userHandlers.getUserById);
-app.get("/users", userHandlers.getUser);      // expects credentials via basic authentication (header)
-app.post("/users", userHandlers.createUser);  // expects credentials via basic authentication (header)
+app.post("/users/login", userHandlers.login);
+app.post("/users/signup", userHandlers.signup);
 
-// proxy endpoint for https://api.nytimes.com/svc/books/v3/lists/overview.json
-// req should contain a query parameter "published_date" with a value in YYYY-MM-DD format
-app.get("/nytbooks/overview", nytBooksHandlers.overview);
-// proxy endpoint for https://api.nytimes.com/svc/books/v3/lists/:date/:list.json
-app.get("/nytbooks/:date/:list", nytBooksHandlers.list);
+app.get("/nytbooks/overview", nytBooksHandlers.overview); // proxy endpoint for https://api.nytimes.com/svc/books/v3/lists/overview.json
+app.get("/nytbooks/:date/:list", nytBooksHandlers.list);  // proxy endpoint for https://api.nytimes.com/svc/books/v3/lists/:date/:list.json
 
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);

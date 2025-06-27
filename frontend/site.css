@@ -105,3 +105,8 @@ input:invalid {
   color: red; 
   margin-left: 5px;
 }
+
+#logout {
+  float: right;
+  width: 70px;
+}

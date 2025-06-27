@@ -35,20 +35,14 @@ export default class RatingHandlers {
         });
     }
 
-    static createRating(req, res) {
-        inMemoryDB.db.run(`INSERT INTO Rating(isbn13, userid, score, deleted) VALUES(?, ?, ?, 0)`, [req.body.isbn13, req.body.userid, req.body.score], function(error) {
+    // since there can only be one rating per (user, isbn13), an upsert simplifies things.
+    static upsertRating(req, res) {
+        const sql = `INSERT INTO Rating(isbn13, userid, score, deleted) VALUES(?, ?, ?, 0)
+                        ON CONFLICT(isbn13, userid) DO UPDATE SET score = ?, deleted = 0`;
+        const sqlParams = [req.body.isbn13, req.body.userid, req.body.score, req.body.score];
+        inMemoryDB.db.run(sql, sqlParams, function(error) {
             if (error === null) {
                 res.send({id: this.lastID});  // id of inserted row
-            } else {
-                res.status(500).send(error);
-            }
-        });
-    }
-
-    static updateRating(req, res) {
-        inMemoryDB.db.run(`UPDATE Rating SET score = ? WHERE id = ?`, [req.body.score, req.params.id], (error) => {
-            if (error === null) {
-                res.send();
             } else {
                 res.status(500).send(error);
             }

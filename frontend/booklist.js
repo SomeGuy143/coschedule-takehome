@@ -1,6 +1,12 @@
 // this populates the best seller list with a default list
 window.onload = async function() {
     try {
+        // if not logged in, redirect to login page
+        if (!sessionStorage.getItem("userid")) {
+            window.location.href = "./login.html";
+            return;
+        }
+
         const today = new Date();
         const formattedDate = today.toISOString().split('T')[0]; // YYYY-MM-DD
 
@@ -31,6 +37,12 @@ window.onload = async function() {
 // event listener for clicking the search button
 document.getElementById("search").addEventListener("click", async function(event) {
     try {
+        // if not logged in, redirect to login page
+        if (!sessionStorage.getItem("userid")) {
+            window.location.href = "./login.html";
+            return;
+        }
+
         const selectedDateVal = document.getElementById("date").value;
         const selectedListVal = document.getElementById("list").value;
 
@@ -40,7 +52,7 @@ document.getElementById("search").addEventListener("click", async function(event
         if (response.status == 404) {
             document.getElementById("listInnerScrollContainer").innerHTML = "<p><b>List Not Found. Try a different date or list type.</b></p>";
             return;
-        } 
+        }
 
         document.getElementById("listInnerScrollContainer").innerHTML = "";
 
@@ -55,6 +67,15 @@ document.getElementById("search").addEventListener("click", async function(event
             document.getElementById("listInnerScrollContainer").innerHTML += bookRowHtml;
         }
         registerBookRowClickEvent();
+
+        // close the comments section if it's open
+        // remove css classes to split the screen
+        document.getElementById("listBody").classList.remove("split", "left");
+        document.getElementById("commentSection").classList.remove("split", "right");
+        // remove css classes to add margin to bottom of split screen
+        document.getElementById("listInnerScrollContainer").classList.remove("verticalScrollMargin");
+        document.getElementById("postedCommentsContainer").classList.remove("verticalScrollMargin");
+        document.getElementById("commentSection").hidden = true;
     } catch (error) {
         console.error(error);
     }
@@ -117,8 +138,11 @@ document.getElementById("addCommentButton").addEventListener("click", async func
         headers: {
             "Content-Type": "application/json",
         },
-        // ********** for now, just set userid to 1. we probably derrive that in the backend via the session token **********
-        body: JSON.stringify({ text: textBoxContents, isbn13: document.getElementById("commentSection").getAttribute("data-isbn13"), userid: 1 }),
+        body: JSON.stringify({ 
+            text: textBoxContents, 
+            isbn13: document.getElementById("commentSection").getAttribute("data-isbn13"), 
+            userid: sessionStorage.getItem("userid") 
+        }),
     });
 
     if (response.status != 200) {
@@ -159,7 +183,7 @@ async function loadRatingsInfo(isbn13) {
 
     // get the user's rating of the book
     const getRatingURL = new URL(`http://localhost:8080/ratings`);
-    getRatingURL.searchParams.append("userid", 1);  // ************** TEMPORARILY SET THIS TO 1 ******************
+    getRatingURL.searchParams.append("userid", sessionStorage.getItem("userid"));  // ************** TEMPORARILY SET THIS TO 1 ******************
     getRatingURL.searchParams.append("isbn13", isbn13);
     result = await fetch(getRatingURL);
     data = await result.json();
@@ -172,19 +196,26 @@ async function loadRatingsInfo(isbn13) {
 }
 
 document.getElementById("submitRating").addEventListener("click", async function(event) {
-    const userRating = document.getElementById("userRating").value;
-    const bookISBN = document.getElementById("commentSection").getAttribute("data-isbn13");
+    const userRatingElement = document.getElementById("userRating")
     
-    const response = await fetch("http://localhost:8080/ratings", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        // ********** for now, just set userid to 1. we probably derrive that in the backend via the session token **********
-        body: JSON.stringify({ score: userRating, isbn13: bookISBN, userid: 1 }),
-    });
+    if (userRatingElement.checkValidity()) {
+        const userRating = document.getElementById("userRating").value;
+        const bookISBN = document.getElementById("commentSection").getAttribute("data-isbn13");
     
-    await loadRatingsInfo(bookISBN);
+        const response = await fetch("http://localhost:8080/ratings", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ 
+                score: userRating, 
+                isbn13: bookISBN, 
+                userid: sessionStorage.getItem("userid") 
+            }),
+        });
+        
+        await loadRatingsInfo(bookISBN);
+    }
 });
 
 document.getElementById("clearRating").addEventListener("click", async function(event) {
@@ -195,4 +226,9 @@ document.getElementById("clearRating").addEventListener("click", async function(
     
     const commentSectionISBN = document.getElementById("commentSection").getAttribute("data-isbn13");
     await loadRatingsInfo(commentSectionISBN);
+});
+
+document.getElementById("logout").addEventListener("click", async function(event) {
+    sessionStorage.clear();
+    window.location.href = "./login.html";
 });

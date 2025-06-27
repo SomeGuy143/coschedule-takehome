@@ -28,69 +28,20 @@
                 <option value="childrens-middle-grade-paperback-monthly">Children's Middle Grade Paperback (Monthly)</option>
             </select>
             <button id="search">Search</button>
+            <button id="logout">Logout</button>
         </div>
-        <!-- <div id="listBody">
-            <div class="verticalScroll">
-                <div id="listInnerScrollContainer">
-                </div>
-            </div>
-        </div> -->
-        <!-- ******** the listBody section below is for testing only and will be deleted later. Only the empty listBody div above needs to stay. ******** -->
         <div id="listBody">
             <div class="verticalScroll">
                 <div id="listInnerScrollContainer">
-                    <!-- <div class="bookRow" data-isbn13="9798874620936">
-                        <img class="bookCover" src="https://static01.nyt.com/bestsellers/images/9798874620936.jpg">
-                        <div>
-                            <p class="bookTitle">THE PERFECT DIVORCE</p>
-                            <p>Around the time of the disappearance of a woman who had a one-night stand with the attorney Sarah Morgan’s new husband, police reopen the investigation into the murder of her first husband’s mistress.</p>
-                        </div>
-                    </div>
-                    <div class="bookRow" data-isbn13="9781538742082">
-                        <img class="bookCover" src="https://static01.nyt.com/bestsellers/images/9781538742082.jpg">
-                        <div>
-                            <p class="bookTitle">STRANGERS IN TIME</p>
-                            <p>In London in 1944, two teenagers dealing with the dangers of World War II form an alliance with a bookshop owner.</p>
-                        </div>
-                    </div>
-                    <div class="bookRow" data-isbn13="9798874620936">
-                        <img class="bookCover" src="https://static01.nyt.com/bestsellers/images/9798874620936.jpg">
-                        <div>
-                            <p class="bookTitle">THE PERFECT DIVORCE</p>
-                            <p>Around the time of the disappearance of a woman who had a one-night stand with the attorney Sarah Morgan’s new husband, police reopen the investigation into the murder of her first husband’s mistress.</p>
-                        </div>
-                    </div>
-                    <div class="bookRow" data-isbn13="9781538742082">
-                        <img class="bookCover" src="https://static01.nyt.com/bestsellers/images/9781538742082.jpg">
-                        <div>
-                            <p class="bookTitle">STRANGERS IN TIME</p>
-                            <p>In London in 1944, two teenagers dealing with the dangers of World War II form an alliance with a bookshop owner.</p>
-                        </div>
-                    </div>
-                    <div class="bookRow" data-isbn13="9798874620936">
-                        <img class="bookCover" src="https://static01.nyt.com/bestsellers/images/9798874620936.jpg">
-                        <div>
-                            <p class="bookTitle">THE PERFECT DIVORCE</p>
-                            <p>Around the time of the disappearance of a woman who had a one-night stand with the attorney Sarah Morgan’s new husband, police reopen the investigation into the murder of her first husband’s mistress.</p>
-                        </div>
-                    </div>
-                    <div class="bookRow" data-isbn13="9781538742082">
-                        <img class="bookCover" src="https://static01.nyt.com/bestsellers/images/9781538742082.jpg">
-                        <div>
-                            <p class="bookTitle">STRANGERS IN TIME</p>
-                            <p>In London in 1944, two teenagers dealing with the dangers of World War II form an alliance with a bookshop owner.</p>
-                        </div>
-                    </div> -->
                 </div>
             </div>
         </div>
-        <!-- WIP END -->
         <div id="commentSection" data-isbn13="" hidden>
             <div class="verticalScroll">
                 <div id="ratingContainer">
                     <p id="avgRatingText">Avg Rating: <span id="avgRating"></span></p>
                     <span>Your Rating: 
-                        <input id="userRating" data-id="" type="text" pattern="[0-5]{1}" maxlength="1"> 
+                        <input id="userRating" data-id="" type="text" pattern="[1-5]{1}" maxlength="1"> 
                         <button id="submitRating">Submit</button>
                         <button id="clearRating">Clear</button>
                     </span>
